@@ -1,3 +1,5 @@
+all: store lab1
+
 lab1: ./bin/util.o ./bin/io.o ./bin/algorithm.o ./bin/main.o
 	gcc ./bin/algorithm.o ./bin/util.o ./bin/io.o ./bin/main.o -o lab1
 
@@ -16,3 +18,6 @@ lab1: ./bin/util.o ./bin/io.o ./bin/algorithm.o ./bin/main.o
 clean: 
 	rm -rf ./bin
 	rm -rf lab1
+
+store:
+	mkdir bin -p
