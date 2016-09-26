@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdlib.h>
+#include <string.h>
 
 struct position_node {
   int x, y;
@@ -57,12 +58,6 @@ void remove_all_positions(struct intrusive_list *l) {
 	}
 }
 
-bool equal(const char *a, const char* b){
-	while (*a == *b && *a != '\0')
-		a++, b++;
-	return (*a == *b && *a == '\0');
-}
-
 int main() {
 	struct intrusive_list l;
 	init_list(&l);
@@ -70,29 +65,30 @@ int main() {
 	int x, y;
 	while (true){
 		scanf("%s", &c);
-		if (equal(c, "add")){
+		if (strcmp(c, "add") == 0){
 			scanf("%d%d", &x, &y);
 			add_position(&l, x, y);
 		}else
-		if (equal(c, "rm")){
+		if (strcmp(c, "rm") == 0){
 			scanf("%d%d", &x, &y);
 			remove_position(&l, x, y);
 		}else
-		if (equal(c, "rma")){
+		if (strcmp(c, "rma") == 0){
 			remove_all_positions(&l);
 		}else
-		if (equal(c, "exit")){
+		if (strcmp(c, "exit") == 0){
 			break;	
 		}else
-		if (equal(c, "len")){
+		if (strcmp(c, "len") == 0){
 			printf("%d\n", get_length(&l));
 		}else
-		if (equal(c, "print")){
+		if (strcmp(c, "print") == 0){
 			show_all_positions(&l);
 			printf("\n");
 		}else{
 			printf("Unknown command\n");
 		}
 	}
+	remove_all_positions(&l);
 	return 0;
 }
