@@ -63,6 +63,8 @@ void mergesort(void* base, size_t num, size_t sz, cmp_t cmpr){
 }
 
 int main(int argc, char **argv){
+	if (argc < 3)
+		return 0;
 	if (argv[1][0] == 'i'){
 		int c[argc - 2];
 		for (int i = 0; i < argc - 2; i++){
