@@ -51,8 +51,8 @@ void savetext(char *name, char *arr, int num){
 	FILE *f = fopen(name, "w");
 	int x, y;
 	for (int i = 0; i < num; i+= 6){
-		x = (arr[i] >> 16) + (arr[i + 1] >> 8) + arr[i + 2];
-		y = (arr[i + 3] >> 16) + (arr[i + 4] >> 8) + arr[i + 5];
+		x = (arr[i] << 16) + (arr[i + 1] << 8) + arr[i + 2];
+		y = (arr[i + 3] << 16) + (arr[i + 4] << 8) + arr[i + 5];
 		fprintf(f, "%d %d\n", x, y);
 	}
 	fclose(f);
@@ -86,17 +86,17 @@ void apply(struct intrusive_list *l, void (*op)(struct position_node*, void*), v
 void make(struct intrusive_list *l, char *arr, int num){
 	int x, y;
 	for (int i = num - 6; i >= 0; i-=6){
-		x = (arr[i] >> 16) + (arr[i + 1] >> 8) + arr[i + 2];
-		y = (arr[i + 3] >> 16) + (arr[i + 4] >> 8) + arr[i + 5];
+		x = (arr[i] << 16) + (arr[i + 1] << 8) + arr[i + 2];
+		y = (arr[i + 3] << 16) + (arr[i + 4] << 8) + arr[i + 5];
 		add_position(l, x, y);
 	}
 }
 
-int main(int argc, char **argv) {
-	struct intrusive_list l;
-	init_list(&l);
+int main(int argc, char **argv){
 	if (argc < 4)
 		return 0;
+	struct intrusive_list l;
+	init_list(&l);
 	char *arr;
 	int *num;
 	if (strcmp(argv[1], "loadtext") == 0){
