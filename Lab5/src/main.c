@@ -9,12 +9,12 @@ char *loadtext(char *name, int *number){
 	FILE *f = fopen(name, "r");
 	char *res = malloc(300*sizeof(char));
 	size_t sz = 300, num = 0;
-	int x, y;
+	int x, y, c;
 	while (!feof(f)){
-		fscanf(f, "%d%d", &x, &y);
+		c = fscanf(f, "%d%d", &x, &y);
 		if (num + 6 > sz){
 			sz += 300;
-			res = realloc(res, sz*sizeof(char)); 
+			res = realloc(res, sz*sizeof(char));
 		}
 		res[num] = (x << 8) >> 24;
 		res[num + 1] = (x << 16) >> 24;
@@ -22,7 +22,8 @@ char *loadtext(char *name, int *number){
 		res[num + 3] = (y << 8) >> 24;
 		res[num + 4] = (y << 16) >> 24;
 		res[num + 5] = (y << 24) >> 24;
-		num+=6;
+		if (c == 2)
+			num+=6;
 	}
 	*number = num;
 	fclose(f);
@@ -38,8 +39,8 @@ char *loadbin(char *name, int *number){
 			sz += 300;
 			res = realloc(res, sz*sizeof(char));
 		}
-		fread(res + num, 1, 6*sizeof(char), f);
-		num += 6;
+		if (fread(res + num, 1, 6*sizeof(char), f) == 1);
+			num += 6;
 	}
 	*number = num - 6;
 	fclose(f);
@@ -53,18 +54,19 @@ void savetext(char *name, char *arr, int num){
 		x = (arr[i] >> 16) + (arr[i + 1] >> 8) + arr[i + 2];
 		y = (arr[i + 3] >> 16) + (arr[i + 4] >> 8) + arr[i + 5];
 		fprintf(f, "%d %d\n", x, y);
-	}	
+	}
 	fclose(f);
 }
 
 void savebin(char *name, char *arr, int num){
 	FILE *f = fopen(name, "w");
-	fwrite(arr, 1, num*sizeof(char), f);	
+	fwrite(arr, 1, num*sizeof(char), f);
 	fclose(f);
 }
 
 void count(struct position_node* p, void* num){
-	(*(int *)num)++;
+	int *pi = (int*)num;
+	(*pi)++;
 }
 
 void print(struct position_node* p, void* s){
