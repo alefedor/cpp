@@ -16,12 +16,12 @@ char *loadtext(char *name, int *number){
 			sz += 300;
 			res = realloc(res, sz*sizeof(char));
 		}
-		res[num] = (x << 8) >> 24;
+		res[num + 2] = (x << 8) >> 24;
 		res[num + 1] = (x << 16) >> 24;
-		res[num + 2] = (x << 24) >> 24;
-		res[num + 3] = (y << 8) >> 24;
+		res[num] = (x << 24) >> 24;
+		res[num + 5] = (y << 8) >> 24;
 		res[num + 4] = (y << 16) >> 24;
-		res[num + 5] = (y << 24) >> 24;
+		res[num + 3] = (y << 24) >> 24;
 		if (c == 2)
 			num+=6;
 	}
@@ -51,8 +51,8 @@ void savetext(char *name, char *arr, int num){
 	FILE *f = fopen(name, "w");
 	int x, y;
 	for (int i = 0; i < num; i+= 6){
-		x = (arr[i] << 16) + (arr[i + 1] << 8) + arr[i + 2];
-		y = (arr[i + 3] << 16) + (arr[i + 4] << 8) + arr[i + 5];
+		x = arr[i] + (arr[i + 1] << 8) + (arr[i + 2] << 16);
+		y = arr[i + 3] + (arr[i + 4] << 8) + (arr[i + 5] << 16);
 		fprintf(f, "%d %d\n", x, y);
 	}
 	fclose(f);
@@ -86,8 +86,8 @@ void apply(struct intrusive_list *l, void (*op)(struct position_node*, void*), v
 void make(struct intrusive_list *l, char *arr, int num){
 	int x, y;
 	for (int i = num - 6; i >= 0; i-=6){
-		x = (arr[i] << 16) + (arr[i + 1] << 8) + arr[i + 2];
-		y = (arr[i + 3] << 16) + (arr[i + 4] << 8) + arr[i + 5];
+		x = arr[i] + (arr[i + 1] << 8) + (arr[i + 2] << 16);
+		y = arr[i + 3] + (arr[i + 4] << 8) + (arr[i + 5] << 16);
 		add_position(l, x, y);
 	}
 }
