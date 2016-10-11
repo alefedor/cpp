@@ -123,7 +123,7 @@ int main(int argc, char **argv){
 	struct intrusive_list l;
 	init_list(&l);
 	unsigned char *arr;
-	int *num;
+	int *num = malloc(1*sizeof(int));
 	if (strcmp(argv[1], "loadtext") == 0){
 		arr = loadtext(argv[2], num);
 	}else{
@@ -142,6 +142,7 @@ int main(int argc, char **argv){
 		apply(&l, print, argv[4]);
 		printf("\n");
 	}
+	free(num);
 	free(arr);
 	remove_all_positions(&l);
 	return 0;
