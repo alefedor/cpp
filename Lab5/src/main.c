@@ -13,6 +13,8 @@ unsigned char *loadtext(char *name, int *number){
 	int x, y, c;
 	while (!feof(f)){
 		c = fscanf(f, "%d%d", &x, &y);
+		if (c != 2)
+			break;
 		if (num + 6 > sz){
 			sz += 300;
 			res = realloc(res, sz*sizeof(char));
@@ -31,8 +33,7 @@ unsigned char *loadtext(char *name, int *number){
 		res[num + 5] |= (bb << 7);
 		res[num + 4] = (y << 16) >> 24;
 		res[num + 3] = (y << 24) >> 24;
-		if (c == 2)
-			num+=6;
+		num+=6;
 	}
 	*number = num;
 	fclose(f);
@@ -51,7 +52,9 @@ unsigned char *loadbin(char *name, int *number){
 		if (fread(res + num, 1, 6*sizeof(char), f) == 1);
 			num += 6;
 	}
-	*number = num - 6;
+	*number = (int)num - 6;
+	if (number < 0)
+		number = 0;
 	fclose(f);
 	return res;
 }
