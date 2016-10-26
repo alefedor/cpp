@@ -21,7 +21,7 @@ void start_element(void *data, const char *element, const char **attribute) {
     phonebook_t *book = (phonebook_t*)data;
     if (strcmp(element, "human") == 0){
 	push_back_human(book);
-        char tmp[1000];
+        char* tmp = malloc(1000);
         strcpy(tmp, attribute[1]);
 	char *p = tmp;
         p = strtok(p, " \t");
@@ -30,6 +30,7 @@ void start_element(void *data, const char *element, const char **attribute) {
         strcpy(book -> humans[book -> size - 1].middle_name, p);
         p = strtok(NULL, " \t");
         strcpy(book -> humans[book -> size - 1].family_name, p);
+    	free(tmp);
     }
 }
 
@@ -39,7 +40,7 @@ void end_element(void *data, const char *element) {
 
 void handle_data(void *data, const char *content, int length) {
     phonebook_t *book = (phonebook_t*)data;
-    char tmp[length + 1];
+    char* tmp = malloc(length + 1);
     strncpy(tmp, content, length);
     tmp[length] = '\0';
     char *p = strtok(tmp, " \n\t");
@@ -52,6 +53,7 @@ void handle_data(void *data, const char *content, int length) {
     	if (num != 9)
 		book -> humans[book -> size - 1].phones[num + 1][0] = '\0';	
     }
+    free(tmp);
 }
 
 int load_phonebook_xml(const char *filename, phonebook_t *book){
@@ -61,7 +63,7 @@ int load_phonebook_xml(const char *filename, phonebook_t *book){
         printf("Failed to open file\n");
         return 1;
     }
-    char buff[BUFFER_SIZE];
+    char* buff = malloc(BUFFER_SIZE*sizeof(char));
     memset(buff, 0, BUFFER_SIZE);
     XML_Parser  parser = XML_ParserCreate(NULL);
     XML_SetElementHandler(parser, start_element, end_element);
@@ -75,12 +77,14 @@ int load_phonebook_xml(const char *filename, phonebook_t *book){
 
         if (XML_Parse(parser, buff, len, done) == XML_STATUS_ERROR) {
             printf("Error: %s\n", XML_ErrorString(XML_GetErrorCode(parser)));
-            return 2;
+            free(buff);    
+	    return 2;
         }
     } while (!done);
 
     XML_ParserFree(parser);
     fclose(fp);
+    free(buff);
     return 0;
 }
 
