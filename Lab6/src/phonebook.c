@@ -8,12 +8,16 @@
 
 #define BUFFER_SIZE 2000
 
+static int cur_phone_pos = 0;
+static int cur_phone_num = 0;
+
 void push_back_human(phonebook_t *book){
     if (book -> size == book -> capacity){
         book -> capacity *= 2;
         book -> humans = realloc(book -> humans, sizeof(human_t) * book -> capacity);
     }
     book -> humans[book -> size].phones[0][0] = '\0';
+    cur_phone_num = 0;
     book -> size++;
 }
 
@@ -35,7 +39,10 @@ void start_element(void *data, const char *element, const char **attribute) {
 }
 
 void end_element(void *data, const char *element) {
-    //nothing to do
+   	if (strcmp(element, "phone") == 0){
+		cur_phone_pos = 0;
+		cur_phone_num++;
+	}
 }
 
 void handle_data(void *data, const char *content, int length) {
@@ -45,12 +52,10 @@ void handle_data(void *data, const char *content, int length) {
     tmp[length] = '\0';
     char *p = strtok(tmp, " \n\t");
     if (p != NULL){
-        size_t num;
-	for (num = 0; num < 9; num++)
-		if (book -> humans[book -> size - 1].phones[num][0] == '\0')
-			break;
-        strcpy(book -> humans[book -> size - 1].phones[num], p);
-    	if (num != 9)
+        size_t num = cur_phone_num;
+        strcpy(book -> humans[book -> size - 1].phones[num] + cur_phone_pos, p);
+    	cur_phone_pos += strlen(p);
+	if (num != 9)
 		book -> humans[book -> size - 1].phones[num + 1][0] = '\0';	
     }
     free(tmp);
