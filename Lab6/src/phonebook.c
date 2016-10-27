@@ -8,8 +8,8 @@
 
 #define BUFFER_SIZE 2000
 
-static int cur_phone_pos = 0;
-static int cur_phone_num = 0;
+static size_t cur_phone_pos = 0;
+static size_t cur_phone_num = 0;
 
 void push_back_human(phonebook_t *book){
     if (book -> size == book -> capacity){
