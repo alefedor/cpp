@@ -4,7 +4,7 @@
 
 using namespace std;
 
-Matrix::Matrix(size_t r, size_t c) {
+Matrix::Matrix(size_t r, size_t c){
     _rows = r;
     _cols = c;
     _data = new int*[_rows];
