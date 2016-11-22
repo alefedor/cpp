@@ -98,11 +98,8 @@ const Matrix Matrix::operator+(const Matrix& m) const{
 }
 
 const Matrix Matrix::operator-(const Matrix& m) const{
-    Matrix tmp(m);
-    tmp -= (*this);
-    for (size_t i = 0; i < _rows; i++)
-        for (size_t j = 0; j < _cols; j++)
-            tmp._data[i][j] = -tmp._data[i][j];
+    Matrix tmp((*this));
+    tmp -= m;
     return tmp;
 }
 
